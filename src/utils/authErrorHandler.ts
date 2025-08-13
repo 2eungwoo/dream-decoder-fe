@@ -1,10 +1,11 @@
 import { AUTH_ERROR_MESSAGES, AuthErrorCode } from "../types/authErrors";
 import { commonErrorHandler } from "./commonErrorHandler";
+import type { CommonError } from "../types/common/ErrorResponse";
 
 // 인증 도메인 전용 에러 처리 유틸리티
 export const authErrorHandler = {
   // 인증 에러 메시지 추출
-  getAuthErrorMessage: (error: any): string => {
+  getAuthErrorMessage: (error: CommonError): string => {
     // CORS 에러 체크
     if (commonErrorHandler.isCorsError(error)) {
       return "백엔드 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.";
@@ -13,6 +14,11 @@ export const authErrorHandler = {
     // 네트워크 에러 체크
     if (commonErrorHandler.isNetworkError(error)) {
       return "네트워크 연결을 확인해주세요.";
+    }
+
+    // AxiosErrorResponse 타입인지 확인
+    if (!("response" in error) || !error.response) {
+      return "알 수 없는 에러가 발생했습니다.";
     }
 
     const { status, data } = error.response;
@@ -45,7 +51,7 @@ export const authErrorHandler = {
 
   // 인증 에러 스타일 결정
   getAuthErrorStyle: (
-    error: any
+    error: CommonError
   ): { type: "error" | "warning" | "info"; icon: string } => {
     // CORS 에러 체크
     if (commonErrorHandler.isCorsError(error)) {
@@ -56,16 +62,26 @@ export const authErrorHandler = {
       return commonErrorHandler.getNetworkErrorStyle();
     }
 
+    // AxiosErrorResponse 타입인지 확인
+    if (!("response" in error) || !error.response) {
+      return { type: "error", icon: "❌" };
+    }
+
     const { status } = error.response;
     return commonErrorHandler.getErrorStyleByStatus(status);
   },
 
   // 로그인 에러인지 확인
-  isLoginError: (error: any): boolean => {
+  isLoginError: (error: CommonError): boolean => {
     if (
       commonErrorHandler.isCorsError(error) ||
       commonErrorHandler.isNetworkError(error)
     ) {
+      return false;
+    }
+
+    // AxiosErrorResponse 타입인지 확인
+    if (!("response" in error) || !error.response) {
       return false;
     }
 
@@ -78,11 +94,16 @@ export const authErrorHandler = {
   },
 
   // 회원가입 에러인지 확인
-  isSignUpError: (error: any): boolean => {
+  isSignUpError: (error: CommonError): boolean => {
     if (
       commonErrorHandler.isCorsError(error) ||
       commonErrorHandler.isNetworkError(error)
     ) {
+      return false;
+    }
+
+    // AxiosErrorResponse 타입인지 확인
+    if (!("response" in error) || !error.response) {
       return false;
     }
 

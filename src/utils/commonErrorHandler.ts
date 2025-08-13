@@ -1,18 +1,18 @@
-import type { ErrorResponse } from "../types/common/ErrorResponse";
+import type { CommonError } from "../types/common/ErrorResponse";
 
 // 공통 에러 처리 유틸리티
 export const commonErrorHandler = {
   // 네트워크 에러 체크
-  isNetworkError: (error: any): boolean => {
-    return !error.response;
+  isNetworkError: (error: CommonError): boolean => {
+    return !("response" in error) || !error.response;
   },
 
   // CORS 에러 체크
-  isCorsError: (error: any): boolean => {
+  isCorsError: (error: CommonError): boolean => {
     return (
       error.message === "Network Error" ||
-      error.code === "ERR_NETWORK" ||
-      error.code === "ERR_CORS"
+      ("code" in error && error.code === "ERR_NETWORK") ||
+      ("code" in error && error.code === "ERR_CORS")
     );
   },
 

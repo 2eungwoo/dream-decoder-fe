@@ -2,8 +2,8 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/auth";
 import { storage } from "../utils/storage";
-import { navigation } from "../utils/navigation";
 import { authErrorHandler } from "../utils/authErrorHandler";
+import type { CommonError } from "../types/common/ErrorResponse";
 
 export const useAuthActions = () => {
   const navigate = useNavigate();
@@ -15,18 +15,19 @@ export const useAuthActions = () => {
         const response = await authService.login({ username, password });
 
         if (response.data) {
-          const { token, ...userData } = response.data;
+          const { token } = response.data;
           storage.setToken(token);
           storage.setUser(response.data);
           navigate("/dashboard");
           return { success: true };
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const authError = error as CommonError;
         return {
           success: false,
-          error: authErrorHandler.getAuthErrorMessage(error),
-          errorStyle: authErrorHandler.getAuthErrorStyle(error),
-          isLoginError: authErrorHandler.isLoginError(error),
+          error: authErrorHandler.getAuthErrorMessage(authError),
+          errorStyle: authErrorHandler.getAuthErrorStyle(authError),
+          isLoginError: authErrorHandler.isLoginError(authError),
         };
       }
     },
@@ -52,12 +53,13 @@ export const useAuthActions = () => {
         if (response.data) {
           return { success: true };
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const authError = error as CommonError;
         return {
           success: false,
-          error: authErrorHandler.getAuthErrorMessage(error),
-          errorStyle: authErrorHandler.getAuthErrorStyle(error),
-          isSignUpError: authErrorHandler.isSignUpError(error),
+          error: authErrorHandler.getAuthErrorMessage(authError),
+          errorStyle: authErrorHandler.getAuthErrorStyle(authError),
+          isSignUpError: authErrorHandler.isSignUpError(authError),
         };
       }
     },

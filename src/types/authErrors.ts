@@ -1,11 +1,13 @@
 // 인증 도메인 에러 코드 (백엔드 AuthErrorCode와 동일)
-export enum AuthErrorCode {
-  PASSWORD_MISMATCH = "AUTH_E001",
-  USERNAME_ALREADY_EXISTS = "AUTH_E002",
-  EMAIL_ALREADY_EXISTS = "AUTH_E003",
-  USER_NOT_FOUND = "AUTH_E004",
-  INVALID_PASSWORD = "AUTH_E005",
-}
+export const AuthErrorCode = {
+  PASSWORD_MISMATCH: "AUTH_E001",
+  USERNAME_ALREADY_EXISTS: "AUTH_E002",
+  EMAIL_ALREADY_EXISTS: "AUTH_E003",
+  USER_NOT_FOUND: "AUTH_E004",
+  INVALID_PASSWORD: "AUTH_E005",
+} as const;
+
+export type AuthErrorCode = (typeof AuthErrorCode)[keyof typeof AuthErrorCode];
 
 // 인증 도메인 에러 메시지 매핑
 export const AUTH_ERROR_MESSAGES: Record<string, string> = {

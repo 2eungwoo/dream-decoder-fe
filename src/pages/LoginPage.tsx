@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../components/ui/Button";
@@ -15,7 +15,6 @@ export const LoginPage: React.FC = () => {
     icon: string;
   }>({ type: "error", icon: "❌" });
   const { login, isLoading, setLoading } = useAuth();
-  const navigate = useNavigate();
 
   const {
     register,
@@ -31,7 +30,7 @@ export const LoginPage: React.FC = () => {
     const result = await login(data.username, data.password);
     setLoading(false);
 
-    if (!result.success) {
+    if (result && !result.success) {
       setError(result.error || "로그인에 실패했습니다.");
       if (result.errorStyle) {
         setErrorStyle(result.errorStyle);

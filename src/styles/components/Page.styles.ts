@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { colors, spacing } from "../theme";
+import { colors, spacing, type Theme } from "../theme";
 
 // 페이지 컨테이너 스타일
-export const PageContainer = styled.div`
+export const PageContainer = styled.div<{ theme: Theme }>`
   min-height: 100vh;
   display: flex;
   align-items: center;
