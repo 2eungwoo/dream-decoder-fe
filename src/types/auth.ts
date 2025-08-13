@@ -1,10 +1,3 @@
-// 백엔드 API 응답 타입
-export interface ApiResponse<T> {
-  code: string;
-  message: string;
-  data: T;
-}
-
 // 인증 응답 타입
 export interface AuthResponse {
   token: string;
